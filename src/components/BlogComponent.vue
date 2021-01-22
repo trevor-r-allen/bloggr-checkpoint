@@ -1,0 +1,32 @@
+<template>
+  <div class="col">
+    <div class="card">
+      <img class="card-img-top" src="holder.js/100x180/" alt="">
+      <div class="card-body">
+        <h4 class="card-title">
+          {{ blogProp.title }}
+        </h4>
+        <p class="card-text">
+          {{ blogProp.creator.name }}
+        </p>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'BlogComponent',
+  props: {
+    blogProp: { type: Object, required: true }
+  },
+  setup(props) {
+
+  }
+
+}
+</script>
+
+<style>
+
+</style>
