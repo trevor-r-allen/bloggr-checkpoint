@@ -16,6 +16,12 @@ const routes = [
     name: 'About',
     component: loadPage('AboutPage')
   },
+  // REVIEW Wat points to this? wat properties are pointed to?
+  {
+    path: '/api/blogs/:id',
+    name: 'BlogDetailsPage',
+    component: loadPage('BlogDetailsPage')
+  },
   {
     path: '/account',
     name: 'Account',

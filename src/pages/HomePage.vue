@@ -4,7 +4,7 @@
       <div class="col-12 text-center">
         <h1>Bloggr</h1>
       </div>
-      <div class="col">
+      <div class="col" v-if="state.user.isAuthenticated">
         <!-- Button trigger modal -->
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createBlogModal">
           Create Blog
@@ -27,7 +27,8 @@ export default {
   name: 'Home',
   setup() {
     const state = reactive({
-      blogs: computed(() => AppState.blogs)
+      blogs: computed(() => AppState.blogs),
+      user: computed(() => AppState.user)
 
     })
     onMounted(() => {
