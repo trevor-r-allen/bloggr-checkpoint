@@ -1,10 +1,7 @@
 <template>
   <div class="blogDetails flex-grow-1 d-flex flex-column align-items-center justify-content-center container-fluid">
     <div class="row">
-      <div class="col-10"></div>
-    </div>
-    <div class="row">
-      <div class="col-8 offset-1">
+      <div class="col-8 offset-2">
         <div class="card">
           <img class="card-img-top" :src="state.blog.imgUrl" alt="">
           <div class="card-body">
@@ -17,18 +14,26 @@
             <p class="card-text">
               {{ state.blog.body }}
             </p>
+            <CommentComponent v-for="comment in state.comments" :key="comment.id" :comment-prop="comment" />
+            <form @submit.prevent="createComment">
+              <div class="form-group">
+                <input type="text"
+                       class="form-control"
+                       name="commentBody"
+                       id="commentBody"
+                       placeholder="Leave a comment"
+                       v-model="state.newComment.body"
+                >
+              </div>
+            </form>
           </div>
         </div>
       </div>
       <div class="col-1">
+        <!-- TODO make edit button do something -->
         <button type="button" class="btn btn-primary" v-if="state.user.id == state.blog.creatorId">
           Edit
         </button>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col">
-        <CommentComponent />
       </div>
     </div>
   </div>
@@ -39,6 +44,7 @@ import { computed, onMounted, reactive } from 'vue'
 import { AppState } from '../AppState'
 import { onBeforeRouteLeave, useRoute } from 'vue-router'
 import { blogsService } from '../services/BlogsService'
+import { commentsService } from '../services/CommentsService'
 import { logger } from '../utils/Logger'
 export default {
   name: 'BlogDetails',
@@ -48,12 +54,14 @@ export default {
     const state = reactive({
       user: computed(() => AppState.user),
       blog: computed(() => AppState.activeBlog),
+      newComment: { blog: route.params.id },
       // TODO set up to properly display only comments with this blog's id
       comments: computed(() => AppState.comments)
     })
     onMounted(async() => {
       try {
         await blogsService.getBlogById(route.params.id)
+        await blogsService.getComments(route.params.id)
       } catch (error) {
         logger.error(error)
       }
@@ -63,7 +71,14 @@ export default {
     })
 
     return {
-      state
+      state,
+      async createComment() {
+        try {
+          commentsService.createComment(state.newComment)
+        } catch (error) {
+          logger.error(error)
+        }
+      }
 
     }
   }
