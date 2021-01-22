@@ -4,6 +4,13 @@
       <div class="col-12 text-center">
         <h1>Bloggr</h1>
       </div>
+      <div class="col">
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createBlogModal">
+          Create Blog
+        </button>
+        <ModalComponent />
+      </div>
     </div>
     <div class="row">
       <BlogComponent v-for="blog in state.blogs" :key="blog.id" :blog-prop="blog" />

@@ -1,7 +1,7 @@
 <template>
   <div class="col">
     <div class="card">
-      <img class="card-img-top" src="holder.js/100x180/" alt="">
+      <img class="card-img-top" :src="blogProp.imgUrl" alt="">
       <div class="card-body">
         <h4 class="card-title">
           {{ blogProp.title }}
