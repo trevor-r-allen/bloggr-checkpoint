@@ -74,7 +74,7 @@ export default {
       state,
       async createComment() {
         try {
-          commentsService.createComment(state.newComment)
+          commentsService.createComment(state.newComment, route.params.id)
         } catch (error) {
           logger.error(error)
         }

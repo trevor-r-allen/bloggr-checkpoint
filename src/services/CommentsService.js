@@ -1,12 +1,14 @@
+import { blogsService } from './BlogsService'
+
 const { AppState } = require('../AppState')
 const { logger } = require('../utils/Logger')
 const { api } = require('./AxiosService')
 
 class CommentsService {
-  async createComment(comment) {
+  async createComment(comment, id) {
     try {
-      const res = await api.post('api/comments', comment)
-      AppState.comments.push(res.data)
+      await api.post('api/comments', comment)
+      blogsService.getComments(id)
     } catch (error) {
       logger.error(error)
     }
