@@ -1,5 +1,5 @@
 <template>
-  <!-- Modal -->
+  <!-- Create Modal -->
   <div class="modal fade"
        id="createBlogModal"
        tabindex="-1"
@@ -65,24 +65,99 @@
       </div>
     </div>
   </div>
+
+  <!-- Edit Modal -->
+  <div class="modal fade"
+       id="editBlogModal"
+       tabindex="-1"
+       role="dialog"
+       aria-labelledby="editBlogModal"
+       aria-hidden="true"
+  >
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editBlogModal">
+            Edit This Blog Post
+          </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <form @submit.prevent="editBlog">
+            <div class="form-group">
+              <input type="text"
+                     name="Blog title"
+                     id="blogTitle"
+                     class="form-control"
+                     placeholder="Blog title"
+                     v-model="state.blogEdits.title"
+              >
+              <textarea class="form-control"
+                        name="Body"
+                        id="body"
+                        rows="5"
+                        placeholder="Body"
+                        v-model="state.blogEdits.body"
+              >
+              </textarea>
+              <input type="text"
+                     name="Image url"
+                     id="imageUrl"
+                     class="form-control"
+                     placeholder="Image url"
+                     v-model="state.blogEdits.imgUrl"
+              >
+              <input type="text"
+                     name="Tags"
+                     id="tags"
+                     class="form-control"
+                     placeholder="Tags"
+                     v-model="state.blogEdits.tags"
+              >
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="isPublished" v-model="state.blogEdits.published">
+                <label class="form-check-label" for="isPublished">
+                  Publish? (If left unchecked draft will be saved)
+                </label>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-success">
+              Create
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
-import { reactive } from 'vue'
+import { computed, reactive } from 'vue'
 import { blogsService } from '../services/BlogsService'
 import { logger } from '../utils/Logger'
+import { AppState } from '../AppState'
 export default {
   name: 'ModalComponent',
   setup() {
     const state = reactive({
-      newBlog: {}
+      newBlog: {},
+      blogEdits: computed(() => AppState.activeBlog)
     })
     return {
       state,
       async createBlog() {
         try {
           await blogsService.createBlog(state.newBlog)
-          logger.log(state.newBlog)
+        } catch (error) {
+          logger.error(error)
+        }
+      },
+      async editBlog() {
+        try {
+          await blogsService.editBlog(state.blogEdits.id, state.blogEdits)
         } catch (error) {
           logger.error(error)
         }

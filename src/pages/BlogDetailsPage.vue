@@ -1,5 +1,5 @@
 <template>
-  <div class="blogDetails flex-grow-1 d-flex flex-column align-items-center justify-content-center container-fluid">
+  <div class="blogDetailsPage flex-grow-1 d-flex flex-column align-items-center justify-content-center container-fluid">
     <div class="row">
       <div class="col-8 offset-2">
         <div class="card">
@@ -30,10 +30,11 @@
         </div>
       </div>
       <div class="col-1">
-        <!-- TODO make edit button do something -->
-        <button type="button" class="btn btn-primary" v-if="state.user.id == state.blog.creatorId">
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editBlogModal" v-if="state.account.id == state.blog.creatorId">
           Edit
         </button>
+        <ModalComponent />
       </div>
     </div>
   </div>
@@ -52,10 +53,9 @@ export default {
     // REVIEW why use this? what does useRoute do?
     const route = useRoute()
     const state = reactive({
-      user: computed(() => AppState.user),
+      account: computed(() => AppState.account),
       blog: computed(() => AppState.activeBlog),
       newComment: { blog: route.params.id },
-      // TODO set up to properly display only comments with this blog's id
       comments: computed(() => AppState.comments)
     })
     onMounted(async() => {
