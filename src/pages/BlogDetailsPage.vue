@@ -1,41 +1,44 @@
 <template>
-  <div class="blogDetailsPage flex-grow-1 d-flex flex-column align-items-center justify-content-center container-fluid">
-    <div class="row">
-      <div class="col-8 offset-2">
-        <div class="card">
-          <img class="card-img-top" :src="state.blog.imgUrl" alt="">
-          <div class="card-body">
-            <h3 class="card-title">
-              {{ state.blog.title }}
-              <h6 v-if="state.blog.creator">
-                Created by: {{ state.blog.creator.name }}
-              </h6>
-            </h3>
-            <p class="card-text">
-              {{ state.blog.body }}
-            </p>
-            <CommentComponent v-for="comment in state.comments" :key="comment.id" :comment-prop="comment" />
-            <form @submit.prevent="createComment">
-              <div class="form-group">
-                <input type="text"
-                       class="form-control"
-                       name="commentBody"
-                       id="commentBody"
-                       placeholder="Leave a comment"
-                       v-model="state.newComment.body"
-                >
-              </div>
-            </form>
-          </div>
+  <div class="blogDetailsPage flex-grow-1 d-flex flex-column align-items-center justify-content-center container-fluid row">
+    <div class="col-8 offset-2">
+      <div class="card">
+        <img class="card-img-top" :src="state.blog.imgUrl" alt="">
+        <div class="card-body">
+          <h3 class="card-title">
+            {{ state.blog.title }}
+            <h6 v-if="state.blog.creator">
+              Created by: {{ state.blog.creator.name }}
+            </h6>
+          </h3>
+          <p class="card-text">
+            {{ state.blog.body }}
+          </p>
+          <CommentComponent v-for="comment in state.comments" :key="comment.id" :comment-prop="comment" />
+          <form @submit.prevent="createComment">
+            <div class="form-group">
+              <input type="text"
+                     class="form-control"
+                     name="commentBody"
+                     id="commentBody"
+                     placeholder="Leave a comment"
+                     v-model="state.newComment.body"
+              >
+            </div>
+          </form>
         </div>
       </div>
-      <div class="col-1">
-        <!-- Button trigger modal -->
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editBlogModal" v-if="state.account.id == state.blog.creatorId">
-          Edit
+    </div>
+    <div class="col-2">
+      <!-- Button trigger modal -->
+      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editBlogModal" v-if="state.account.id == state.blog.creatorId">
+        Edit
+      </button>
+      <ModalComponent />
+      <router-link :to="{name: 'Home'}">
+        <button type="button" class="btn btn-danger" v-if="state.account.id == state.blog.creatorId" @click="deleteBlog">
+          Delete
         </button>
-        <ModalComponent />
-      </div>
+      </router-link>
     </div>
   </div>
 </template>
@@ -75,6 +78,13 @@ export default {
       async createComment() {
         try {
           commentsService.createComment(state.newComment, route.params.id)
+        } catch (error) {
+          logger.error(error)
+        }
+      },
+      async deleteBlog() {
+        try {
+          blogsService.deleteBlog(route.params.id)
         } catch (error) {
           logger.error(error)
         }

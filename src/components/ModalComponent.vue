@@ -86,7 +86,7 @@
         </div>
 
         <div class="modal-body">
-          <form @submit.prevent="editBlog">
+          <form @submit.prevent="editBlog" id="formCreate">
             <div class="form-group">
               <input type="text"
                      name="Blog title"
@@ -144,13 +144,15 @@ export default {
   setup() {
     const state = reactive({
       newBlog: {},
-      blogEdits: computed(() => AppState.activeBlog)
+      blogEdits: computed(() => AppState.activeBlog),
+      activeBlog: computed(() => AppState.activeBlog)
     })
     return {
       state,
       async createBlog() {
         try {
           await blogsService.createBlog(state.newBlog)
+          state.newBlog = {}
         } catch (error) {
           logger.error(error)
         }

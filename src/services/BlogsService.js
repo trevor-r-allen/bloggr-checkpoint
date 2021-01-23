@@ -1,3 +1,5 @@
+import { commentsService } from './CommentsService'
+
 const { AppState } = require('../AppState')
 const { logger } = require('../utils/Logger')
 const { api } = require('./AxiosService')
@@ -34,6 +36,7 @@ class BlogsService {
     try {
       const res = await api.post('api/blogs', blog)
       AppState.blogs.push(res.data)
+      AppState.activeBlog = res.data
     } catch (error) {
       logger.error(error)
     }
@@ -53,6 +56,9 @@ class BlogsService {
     try {
       await api.delete('api/blogs/' + id)
       AppState.blogs = AppState.blogs.filter(blog => !(blog.id === id))
+      AppState.comments.forEach(async comment => {
+        await commentsService.deleteComment(comment.id)
+      })
     } catch (error) {
       logger.error(error)
     }
