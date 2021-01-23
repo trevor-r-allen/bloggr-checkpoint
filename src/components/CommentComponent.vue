@@ -32,9 +32,10 @@ export default {
     })
     return {
       state,
-      async editComment(e) {
+      async editComment(event) {
         try {
-          await commentsService.editComment(props.commentProp.id, e.target.innertext)
+          await commentsService.editComment(props.commentProp.id, event.target.innerText)
+          logger.log(event.target.innerText)
         } catch (error) {
           logger.error(error)
         }
