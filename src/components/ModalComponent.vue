@@ -7,13 +7,14 @@
        aria-labelledby="createBlogModal"
        aria-hidden="true"
   >
+    <!-- :hidden="state.modalVisible" -->
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="createBlogModal">
             Create A New Blog Post
           </h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <button id="closeModal" type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
@@ -125,7 +126,7 @@
               </div>
             </div>
             <button type="submit" class="btn btn-success">
-              Create
+              Save
             </button>
           </form>
         </div>
@@ -139,10 +140,12 @@ import { computed, reactive } from 'vue'
 import { blogsService } from '../services/BlogsService'
 import { logger } from '../utils/Logger'
 import { AppState } from '../AppState'
+import router from '../router'
 export default {
   name: 'ModalComponent',
   setup() {
     const state = reactive({
+      modalVisible: false,
       newBlog: {},
       blogEdits: computed(() => AppState.activeBlog),
       activeBlog: computed(() => AppState.activeBlog)
@@ -153,6 +156,10 @@ export default {
         try {
           await blogsService.createBlog(state.newBlog)
           state.newBlog = {}
+          // REVIEW why doesn't this work: $('#createBlogModal').modal('hide')
+          document.getElementById('closeModal').click()
+          // state.modalVisible = true
+          router.push({ name: 'BlogDetails', params: { id: state.activeBlog.id } })
         } catch (error) {
           logger.error(error)
         }

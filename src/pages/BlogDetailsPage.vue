@@ -70,7 +70,7 @@ export default {
       }
     })
     onBeforeRouteLeave(() => {
-      // AppState.activeBlog = {}
+      AppState.activeBlog = {}
     })
 
     return {
